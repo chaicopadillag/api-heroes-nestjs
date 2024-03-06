@@ -5,8 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { HeroModule } from './hero/hero.module';
 import configuration from './config/configuration';
+import { HeroModule } from './hero/hero.module';
 
 @Module({
   imports: [
@@ -14,9 +14,7 @@ import configuration from './config/configuration';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [configuration.KEY],
-      useFactory: async ({ mongo }: ConfigType<typeof configuration>) => ({
-        uri: mongo.host,
-      }),
+      useFactory: async ({ mongo }: ConfigType<typeof configuration>) => mongo,
     }),
     AuthModule,
     HeroModule,
