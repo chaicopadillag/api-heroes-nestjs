@@ -18,31 +18,33 @@ jobs:
 
       - name: Git Semantic Version
         uses: PaulHatch/semantic-version@v4.0.3
-        id: tag_version
+        id: version
         with:
           major_pattern: "major:"
           minor_pattern: "feat:"
-          format: "${major}.${minor}.${patch}+${increment}"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
           # format: "${major}.${minor}.${patch}-prerelease${increment}"
 
       - name: Docker Login
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          TAG_VERSION: ${{ steps.version.outputs.version }}
 
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo "Tag Version: $TAG_VERSION"
 
       - name: Build Docker Image
         env:
-          TAG_VERSION: ${{ steps.tag_version.outputs.version }}
+          TAG_VERSION: ${{ steps.version.outputs.version }}
         run: |
           docker build -t chaicopadillag/api-heroes:$TAG_VERSION .
           docker build -t chaicopadillag/api-heroes:latest .
 
       - name: Push Docker Image
         env:
-          TAG_VERSION: ${{ steps.tag_version.outputs.version }}
+          TAG_VERSION: ${{ steps.version.outputs.version }}
         run: |
           docker push chaicopadillag/api-heroes:$TAG_VERSION
           docker push chaicopadillag/api-heroes:latest
