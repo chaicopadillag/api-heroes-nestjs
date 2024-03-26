@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  app:
+    container_name: api-heroes
+    image: api-heroes:beta
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: running
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+      MONGO_URI: ${MONGO_URI}
+      MONGO_DB: ${MONGO_DB}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
