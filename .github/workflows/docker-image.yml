@@ -22,7 +22,7 @@ jobs:
           major_pattern: "major:"
           minor_pattern: "feat:"
           # format: "${major}.${minor}.${patch}-prerelease${increment}"
-          format: "${major}.${minor}.${increment}"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
         id: tag_version
 
       - name: Docker Login
