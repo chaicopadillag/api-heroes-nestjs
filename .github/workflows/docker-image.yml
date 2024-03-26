@@ -2,52 +2,50 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    
-    - name: Git Semantic Version
-      uses: PaulHatch/semantic-version@v4.0.3
-      with:
-        major_pattern: "major:"
-        minor_pattern: "feat:"
-        # format: "${major}.${minor}.${patch}-prerelease${increment}"
-        format: "${major}.${minor}.${patch}${increment}"
-      id: tag_version
-      
-    - name: Docker Login
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        
-      run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        
-    - name: Build Docker Image
-      env:
-        TAG_VERSION: ${{ steps.version.outputs.tag_version }}
-      run: |
-        docker build -t chaicopadillag/api-heroes:$TAG_VERSION .
-        docker build -t chaicopadillag/api-heroes:latest .
-        
-    - name: Push Docker Image
-      env:
-        TAG_VERSION: ${{ steps.version.outputs.tag_version }}
-      run: |
-        docker push chaicopadillag/api-heroes:$TAG_VERSION
-        docker push chaicopadillag/api-heroes:latest
-      
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Git Semantic Version
+        uses: PaulHatch/semantic-version@v4.0.3
+        with:
+          major_pattern: "major:"
+          minor_pattern: "feat:"
+          # format: "${major}.${minor}.${patch}-prerelease${increment}"
+          format: "${major}.${minor}.${increment}"
+        id: tag_version
+
+      - name: Docker Login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Build Docker Image
+        env:
+          TAG_VERSION: ${{ steps.version.outputs.tag_version }}
+        run: |
+          docker build -t chaicopadillag/api-heroes:$TAG_VERSION .
+          docker build -t chaicopadillag/api-heroes:latest .
+
+      - name: Push Docker Image
+        env:
+          TAG_VERSION: ${{ steps.version.outputs.tag_version }}
+        run: |
+          docker push chaicopadillag/api-heroes:$TAG_VERSION
+          docker push chaicopadillag/api-heroes:latest
+
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)

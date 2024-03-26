@@ -3,7 +3,7 @@ version: '3'
 services:
   app:
     container_name: api-heroes
-    image: api-heroes:beta
+    image: chaicopadillag/api-heroes
     build:
       context: .
       dockerfile: Dockerfile
